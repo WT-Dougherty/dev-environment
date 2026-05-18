@@ -16,6 +16,10 @@ RUN mkdir -p /run/sshd
 # Create admin user
 RUN useradd -m -s /bin/bash admin
 
+# Add admin to sudo group and configure passwordless sudo
+RUN usermod -aG sudo admin
+RUN echo "admin ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/admin
+
 # Create .ssh directory for admin
 RUN mkdir -p /home/admin/.ssh && chmod 700 /home/admin/.ssh
 

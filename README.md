@@ -10,5 +10,8 @@ This repo uses shell scripts and is made for MacOS/Linux. You also need to have 
 
 ## Repo Instructions
 
+### Running Locally
+
 1. Run `make setup` to create local ssh keys for the container to use.
 2. Run `make default-build-local` to run the container with default arguments locally, & `make build-local RAM={ram_size}g CPUS={num_cpu_cores}` to customize the available working memory & the number of CPU cores.
+3. Run `make connect-local` to ssh into your now running container.
