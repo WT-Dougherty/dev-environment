@@ -9,12 +9,28 @@ RUN apt-get update && apt-get install -y \
     openssh-server \
     && rm -rf /var/lib/apt/lists/*
 
-# Create .ssh directory
-RUN mkdir -p /home/.ssh && chmod 700 /home/.ssh
+# Create SSH privilege separation directory
+RUN mkdir -p /run/sshd
+
+# Create admin user
+RUN useradd -m -s /bin/bash admin
+
+# Create .ssh directory for admin
+RUN mkdir -p /home/admin/.ssh && chmod 700 /home/admin/.ssh
 
 # Copy public key as authorized_keys
-COPY ssh/key.pub /home/.ssh/authorized_keys
-RUN chmod 600 /home/.ssh/authorized_keys
+COPY ssh/access_key.pub /home/admin/.ssh/authorized_keys
+RUN chmod 600 /home/admin/.ssh/authorized_keys && chown -R admin:admin /home/admin/.ssh
+
+# Copy pre-generated host keys if they exist
+COPY ssh/host_key /etc/ssh/ssh_host_ed25519_key
+COPY ssh/host_key.pub /etc/ssh/ssh_host_ed25519_key.pub
+
+# Set proper permissions on host keys
+RUN chmod 600 /etc/ssh/ssh_host_ed25519_key && chmod 644 /etc/ssh/ssh_host_ed25519_key.pub
+
+# Set working directory
+WORKDIR /home
 
 # Expose SSH port
 EXPOSE 22
